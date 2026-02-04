@@ -103,8 +103,8 @@ export function Whiteboard() {
 
   function downloadDoc(fileId: number, name: string) {
     const token = localStorage.getItem('access_token');
-    const base = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'https://hsea-evcfc7bwh7fvaefr.canadacentral-01.azurewebsites.net');
-    const url = base ? `${base.replace(/\/api\/?$/, '')}/api/files/${fileId}` : `/api/files/${fileId}`;
+    const base = 'https://hsea-evcfc7bwh7fvaefr.canadacentral-01.azurewebsites.net';
+    const url = `${base}/api/files/${fileId}`;
     fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
       .then((r) => r.blob())
       .then((blob) => {

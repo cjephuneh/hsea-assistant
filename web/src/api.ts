@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.DEV ? '/api' : 'https://hsea-evcfc7bwh7fvaefr.canadacentral-01.azurewebsites.net/api';
+const API_BASE = 'https://hsea-evcfc7bwh7fvaefr.canadacentral-01.azurewebsites.net/api';
 
 function getToken(): string | null {
   const token = localStorage.getItem('access_token');
