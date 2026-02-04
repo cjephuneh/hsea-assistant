@@ -70,6 +70,10 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_45B9B03039644F6D98817E9D54403657 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_25313DB136A44980B40E7A31BA5A79A7 }}
 
+      # Wait to reduce 409 Conflict (deployment already in progress) when re-running or double push
+      - name: Wait before deploy
+        run: sleep 60
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
