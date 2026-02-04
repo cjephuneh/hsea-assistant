@@ -17,7 +17,7 @@ async function request<T = unknown>(
   };
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
-  } else {
+  } else if (!path.startsWith('/auth/register') && !path.startsWith('/auth/login')) {
     console.warn(`[API] No token found for request to ${path}`);
   }
 
