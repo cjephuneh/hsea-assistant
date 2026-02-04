@@ -20,20 +20,32 @@ export function Voice() {
   const [connectingGmail, setConnectingGmail] = useState(false);
   const voiceServiceRef = useRef<RealtimeVoiceService | null>(null);
 
-  // Load API key and Azure settings from localStorage (no hardcoded secrets)
+  // Load API key and Azure settings from .env (VITE_*) or localStorage
   useEffect(() => {
+    const envKey = import.meta.env.VITE_OPENAI_API_KEY;
     const savedKey = localStorage.getItem('openai_api_key');
-    if (savedKey) setApiKey(savedKey);
+    if (envKey) {
+      setApiKey(envKey);
+      localStorage.setItem('openai_api_key', envKey);
+    } else if (savedKey) {
+      setApiKey(savedKey);
+    }
 
+    const envEndpoint = import.meta.env.VITE_AZURE_REALTIME_ENDPOINT;
     const savedEndpoint = localStorage.getItem('azure_realtime_endpoint');
-    if (savedEndpoint) setAzureEndpoint(savedEndpoint);
+    if (envEndpoint) {
+      setAzureEndpoint(envEndpoint);
+      localStorage.setItem('azure_realtime_endpoint', envEndpoint);
+    } else if (savedEndpoint) {
+      setAzureEndpoint(savedEndpoint);
+    }
+
     const savedDeployment = localStorage.getItem('azure_realtime_deployment');
     if (savedDeployment) setDeployment(savedDeployment);
     const savedUseAzure = localStorage.getItem('voice_use_azure');
     if (savedUseAzure === '1') {
       setUseAzure(true);
     } else if (savedUseAzure === null) {
-      // Default to Azure if not set
       setUseAzure(true);
       localStorage.setItem('voice_use_azure', '1');
     }
