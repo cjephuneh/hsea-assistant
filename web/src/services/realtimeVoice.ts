@@ -12,7 +12,6 @@ export class RealtimeVoiceService {
   private audioBuffer: Uint8Array = new Uint8Array();
   private workletNode: AudioWorkletNode | null = null;
   private connectionOpen = false;
-  private messageHandlerRunning = false;
   private shouldStop = false;
 
   private onTranscript: ((text: string) => void) | null = null;
@@ -65,7 +64,6 @@ export class RealtimeVoiceService {
           },
           input_audio_transcription: {
             model: 'whisper-1',
-            language: 'en',  // Force English only
           },
           instructions: `You are HSEA Assistant, a helpful voice assistant for task management and communication. 
 
@@ -110,7 +108,6 @@ For task operations, you can reference tasks by number (e.g., "task 5") or by ti
 
       // Start message handler AFTER sending config
       // This ensures we're listening for session.created confirmation
-      this.messageHandlerRunning = true;
       const messageHandlerPromise = this.handleMessages();
 
       // Setup audio after connection is established
@@ -129,7 +126,6 @@ For task operations, you can reference tasks by number (e.g., "task 5") or by ti
           
           if (!isRecoverable) {
             this.connectionOpen = false;
-            this.messageHandlerRunning = false;
             this.recordingActive = false;
             this.onError?.('Connection error. Please try again.');
           } else {
@@ -425,7 +421,6 @@ For task operations, you can reference tasks by number (e.g., "task 5") or by ti
         console.error('Message handling error:', error);
         this.connectionOpen = false;
         this.recordingActive = false;
-        this.messageHandlerRunning = false;
         this.onError?.('Connection error. Please try again.');
       } else {
         // For recoverable errors, just mark connection as closed but keep trying
@@ -437,7 +432,6 @@ For task operations, you can reference tasks by number (e.g., "task 5") or by ti
       // Don't set these if recording is still active (might be reconnecting)
       if (this.shouldStop || !this.recordingActive) {
         this.connectionOpen = false;
-        this.messageHandlerRunning = false;
       }
     }
   }
@@ -525,8 +519,7 @@ For task operations, you can reference tasks by number (e.g., "task 5") or by ti
     this.shouldStop = true;
     this.recordingActive = false;
     this.connectionOpen = false;
-    this.messageHandlerRunning = false;
-    
+
     if (this.mediaStream) {
       this.mediaStream.getTracks().forEach(track => track.stop());
       this.mediaStream = null;

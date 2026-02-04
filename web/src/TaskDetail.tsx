@@ -80,7 +80,7 @@ export function TaskDetail() {
   async function addSubtask() {
     if (!task || !newSubtaskTitle.trim()) return;
     setAddingSubtask(true);
-    const { data, status } = await api.tasks.create({
+    const { status } = await api.tasks.create({
       title: newSubtaskTitle.trim(),
       assignee_id: task.assignee?.id ?? 0,
       parent_task_id: task.id,

@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { RealtimeVoiceService } from './services/realtimeVoice';
 import { api } from './api';
 import type { Task } from './api';
 
 export function Voice() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [response, setResponse] = useState('');
@@ -16,7 +14,7 @@ export function Voice() {
   const [useAzure, setUseAzure] = useState(false);
   const [azureEndpoint, setAzureEndpoint] = useState('');
   const [deployment, setDeployment] = useState('gpt-4o-realtime-preview');
-  const [gmailConnected, setGmailConnected] = useState(false);
+  const [gmailConnected] = useState(false);
   const [connectingGmail, setConnectingGmail] = useState(false);
   const voiceServiceRef = useRef<RealtimeVoiceService | null>(null);
 
