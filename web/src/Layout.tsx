@@ -5,34 +5,34 @@ const navGroups = [
   {
     label: 'Work',
     items: [
-      { to: '/dashboard', label: 'Home', icon: '◆' },
-      { to: '/dashboard/todo', label: 'Todo', icon: '◇' },
-      { to: '/dashboard/tasks', label: 'Tasks', icon: '✓' },
-      { to: '/dashboard/voice', label: 'Voice', icon: '◉' },
+      { to: '/dashboard', label: 'Home', icon: '🏠' },
+      { to: '/dashboard/todo', label: 'Todo', icon: '📋' },
+      { to: '/dashboard/tasks', label: 'Tasks', icon: '✅' },
+      { to: '/dashboard/voice', label: 'Voice', icon: '🎤' },
     ],
   },
   {
     label: 'Collaborate',
     items: [
-      { to: '/dashboard/meetings', label: 'Meetings', icon: '▣' },
-      { to: '/dashboard/whiteboard', label: 'Whiteboard', icon: '▤' },
-      { to: '/dashboard/workspaces', label: 'Workspaces', icon: '◈' },
+      { to: '/dashboard/meetings', label: 'Meetings', icon: '📅' },
+      { to: '/dashboard/whiteboard', label: 'Whiteboard', icon: '🎨' },
+      { to: '/dashboard/workspaces', label: 'Workspaces', icon: '👥' },
     ],
   },
   {
     label: 'Tools',
     items: [
-      { to: '/dashboard/reports', label: 'Reports', icon: '▥' },
-      { to: '/dashboard/templates', label: 'Templates', icon: '▦' },
-      { to: '/dashboard/files', label: 'Files', icon: '▧' },
+      { to: '/dashboard/reports', label: 'Reports', icon: '📊' },
+      { to: '/dashboard/templates', label: 'Templates', icon: '📄' },
+      { to: '/dashboard/files', label: 'Files', icon: '📁' },
     ],
   },
   {
     label: 'Account',
     items: [
-      { to: '/dashboard/notifications', label: 'Alerts', icon: '◐' },
-      { to: '/dashboard/mail', label: 'Email', icon: '✉' },
-      { to: '/dashboard/profile', label: 'Profile', icon: '○' },
+      { to: '/dashboard/notifications', label: 'Alerts', icon: '🔔' },
+      { to: '/dashboard/mail', label: 'Email', icon: '✉️' },
+      { to: '/dashboard/profile', label: 'Profile', icon: '👤' },
     ],
   },
 ];
