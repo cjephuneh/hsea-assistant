@@ -1,5 +1,4 @@
-// In dev with proxy, use relative URL so Vite proxies to backend
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api' : 'http://localhost:5001/api');
+const API_BASE = import.meta.env.DEV ? '/api' : 'https://hsea-evcfc7bwh7fvaefr.canadacentral-01.azurewebsites.net/api';
 
 function getToken(): string | null {
   const token = localStorage.getItem('access_token');
