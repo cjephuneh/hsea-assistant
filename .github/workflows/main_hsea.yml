@@ -32,12 +32,17 @@ jobs:
           source antenv/bin/activate
           pip install -r backend/requirements.txt
 
-      # Upload only the backend app for deployment.
+      # Stage backend so artifact root is the app (no package path needed in deploy).
+      - name: Prepare deployment artifact
+        run: |
+          mkdir -p deploy
+          cp -r backend/. deploy/
+
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: backend
+          path: deploy
 
       # 🚫 Opting Out of Oryx Build
       # If you prefer to disable the Oryx build process during deployment, follow these steps:
@@ -57,7 +62,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-app
-      
+
+      - name: Move app to workspace root for Azure
+        run: |
+          shopt -s dotglob
+          mv deploy/* .
+          rmdir deploy
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -71,4 +82,3 @@ jobs:
         with:
           app-name: 'hsea'
           slot-name: 'Production'
-          package: backend
