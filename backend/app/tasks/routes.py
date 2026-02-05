@@ -263,6 +263,9 @@ def update_task(task_id):
     data = request.get_json()
     
     old_status = task.status.value
+    old_notes = task.notes
+    old_assignee = task.assignee
+    old_due_date = task.due_date
     
     if data.get('title'):
         task.title = data['title']
@@ -309,9 +312,34 @@ def update_task(task_id):
     task.updated_at = datetime.utcnow()
     db.session.commit()
     
-    # Create notification for status change
     from app.notifications.service import NotificationService
-    NotificationService.create_task_updated_notification(task)
+    updater = User.query.get(user_id)
+    updater_name = updater.name if updater else "Someone"
+    
+    # Notes updated: email assignee and creator
+    if data.get('notes') is not None and (old_notes or "") != (task.notes or ""):
+        NotificationService.send_task_notes_updated_emails(task, updater_name, task.notes)
+    
+    # Assignee changed: email new assignee, old assignee, and creator
+    if data.get('assignee_id') and old_assignee.id != task.assignee_id:
+        NotificationService.send_assignee_changed_emails(task, old_assignee, task.assignee.name)
+    
+    # Due date changed: email assignee and creator
+    if data.get('due_date') is not None:
+        old_due_str = old_due_date.strftime("%Y-%m-%d") if old_due_date else "None"
+        new_due_str = task.due_date.strftime("%Y-%m-%d") if task.due_date else "None"
+        if old_due_str != new_due_str:
+            NotificationService.send_due_date_changed_emails(task, old_due_str, new_due_str, updater_name)
+    
+    # Status changed: email assignee (unless completed — that has its own flow)
+    if old_status != task.status.value and task.status != TaskStatus.COMPLETED:
+        NotificationService.send_task_status_changed_email(task, old_status, task.status.value, updater_name)
+    
+    # Task completed: in-app notification + creative emails
+    if task.status == TaskStatus.COMPLETED:
+        NotificationService.create_task_completed_notification(task)
+    else:
+        NotificationService.create_task_updated_notification(task)
     
     return jsonify({
         'id': task.id,
@@ -371,11 +399,21 @@ def add_comment(task_id):
     db.session.add(activity)
     db.session.commit()
     
-    # Notify mentioned users
+    from app.notifications.service import NotificationService
+    comment_author = User.query.get(user_id)
+    comment_author_name = comment_author.name if comment_author else "Someone"
+    content_snippet = (data['content'] or "")[:500]
+    
+    # Email assignee and creator when someone comments (excluding commenter)
+    NotificationService.send_comment_added_emails(task, comment_author_name, content_snippet, exclude_user_ids=[user_id])
+    
+    # Notify mentioned users (in-app + email)
     if mentions:
-        from app.notifications.service import NotificationService
         for mentioned_id in mentions:
             NotificationService.create_mention_notification(mentioned_id, task_id, comment.id)
+            mentioned_user = User.query.get(mentioned_id)
+            if mentioned_user:
+                NotificationService.send_mention_email(mentioned_user, task, comment_author_name, content_snippet)
     
     return jsonify({
         'id': comment.id,

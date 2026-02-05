@@ -45,13 +45,17 @@ class Config:
     OUTLOOK_CLIENT_ID = os.environ.get('OUTLOOK_CLIENT_ID')
     OUTLOOK_CLIENT_SECRET = os.environ.get('OUTLOOK_CLIENT_SECRET')
     
-    # Email (SMTP)
+    # Email (SMTP) – Gmail, SendGrid, etc.
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
     MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() == 'true'
+    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', 'false').lower() == 'true'
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or MAIL_USERNAME
+    MAIL_TIMEOUT = int(os.environ.get('MAIL_TIMEOUT', 30))
+    MAIL_DEBUG = os.environ.get('MAIL_DEBUG', 'false').lower() == 'true'
+    MAIL_SUPPRESS_SEND = os.environ.get('MAIL_SUPPRESS_SEND', 'false').lower() == 'true'
     
     # File store (uploads directory, relative to app root)
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads')
